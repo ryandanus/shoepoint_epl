@@ -1,0 +1,18 @@
+.bg-primary {
+    background: #003FA3 !important;
+}
+
+.sidebar-dark-primary .nav-sidebar>.nav-item>.nav-link.active, .sidebar-light-primary .nav-sidebar>.nav-item>.nav-link.active {
+    background: #003FA3 !important;
+}
+
+.dropdown-menu.fade {
+    display: block;
+    opacity: 0;
+    pointer-events: none;
+ }
+ 
+ .show > .dropdown-menu.fade {
+    pointer-events: auto;
+    opacity: 1;
+ }
