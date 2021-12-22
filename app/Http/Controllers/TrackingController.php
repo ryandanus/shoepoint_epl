@@ -4,25 +4,35 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redis;
 
 class TrackingController extends Controller
 {
     public function showTrack(Request $request)
     {
+   
         if(!isset($request->invoice)) // If Order Number is not inserted
         {
             return view('track');
         }
 
         $invoice_id = $request->invoice;
-
-        $status = DB::table('transactions')
-                        ->join('status', 'status.id', '=', 'transactions.status_id')
-                        ->join('users', 'users.id', '=', 'transactions.user_id')
-                        ->join('services', 'services.id', '=', 'transactions.service_id')
-                        ->select('status.status_name', 'transactions.status_id', 'users.name', 'services.service_name', 'isONS')
-                        ->where('transactions.id', $invoice_id)
-                        ->first();
+        // dd($invoice_id);
+        $cachedTransaction= Redis::get('transaction_' . $invoice_id);
+        
+        if(isset($cachedTransaction)) {
+            $status = json_decode($cachedTransaction, FALSE);
+        }else {
+            $status = DB::table('transactions')
+            ->join('status', 'status.id', '=', 'transactions.status_id')
+            ->join('users', 'users.id', '=', 'transactions.user_id')
+            ->join('services', 'services.id', '=', 'transactions.service_id')
+            ->select('status.status_name', 'transactions.status_id', 'users.name', 'services.service_name', 'isONS')
+            ->where('transactions.id', $invoice_id)
+            ->first();
+            // dd($status);
+            Redis::set('transaction_' . $invoice_id, json_encode($status));
+        }
 
         if (!is_null($status))
         {
@@ -40,5 +50,6 @@ class TrackingController extends Controller
                     ->with('statusType', 'fail')
                     ->with('statusMsg', 'No data of order number: ' . $invoice_id);
         }
+        
     }
 }

@@ -18,3 +18,8 @@
 
 * ### Markdown Cheatsheet
 [Link](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet)
+
+* ### App Architecture if using AWS distributed database 
+
+![BDT_EAS drawio](https://user-images.githubusercontent.com/59832754/147092866-6fb1b6d5-d708-4f3b-8d91-9635bbd5dbc9.png)
+
